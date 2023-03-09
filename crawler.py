@@ -39,6 +39,8 @@ def get_inside_links(url):
 
 def get_content(url):
     resp = requests.get(url)
+    if 'pdf' in resp.headers['Content-Type']:
+        return ''
     html = resp.text
     soup = BeautifulSoup(html)
     content = soup.text
@@ -49,12 +51,16 @@ def get_content(url):
 def is_100_pages(dir):
     return 100 < len([name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name))])
 
+def mkdir_for_pages():
+    new_dir = "./%s" % datetime.datetime.now()
+    Path(new_dir).mkdir(parents=True, exist_ok=True)
+    return new_dir
+
 
 urls = ['https://news.tsu.ru/news/', 'https://kpfu.ru', 'https://mipt.ru/']
 
 if __name__ == "__main__":
-    new_dir = "./%s" % datetime.datetime.now()
-    Path(new_dir).mkdir(parents=True, exist_ok=True)
+    new_dir = mkdir_for_pages()
     visited = []
     not_visited_urls = set([])
     idx = 0
@@ -63,13 +69,17 @@ if __name__ == "__main__":
             not_visited_urls = set(urls) - set(visited)
         if is_100_pages(new_dir):
             break
-        to_visit = not_visited_urls.pop()
+        try:
+            to_visit = not_visited_urls.pop()
+        except Exception as e:
+            print(e)
+            break
         content = get_content(to_visit)
         visited.append(to_visit)
         urls += get_inside_links(to_visit)
         urls = list(set(urls))
         if(not has_1000_words(content)):
-            urls.remove(to_visit)
+            # urls.remove(to_visit)
             continue
         # if len(urls) < 100:
         #     urls += get_inside_links(to_visit)

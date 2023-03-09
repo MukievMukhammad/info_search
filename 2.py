@@ -9,7 +9,7 @@ patterns = "[A-Za-z0-9!#$%&'()*+,./:;<=>?@©\n\t\r[\]^_`{|}~—\"\\\-]+"
 stopwords_ru = stopwords.words("russian")
 morph = MorphAnalyzer()
 
-def lemmatize(text):
+def get_lemmatized_words(text):
     text = re.sub(patterns, ' ', text)
     tokens = []
     for token in text.split():
@@ -22,16 +22,19 @@ def lemmatize(text):
         return set(tokens)
     return None
 
-dir = './2023-03-04 08:01:54.701845'
+def get_pages(dir):
+    return [name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)) and name != 'index.txt']
+
+dir = './1'
 
 if __name__ == '__main__':
-    files = [name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)) and name != 'index.txt']
+    files = get_pages(dir)
     inverse_idx = {}
     for file_name in files:
         with open(dir + '/' + file_name, 'r') as f:
             text = f.read()
         try:
-            tokens = lemmatize(text)
+            tokens = get_lemmatized_words(text)
         except Exception as e:
             print(e)
             continue
@@ -40,7 +43,7 @@ if __name__ == '__main__':
                 inverse_idx[t] = [file_name]
             else:
                 inverse_idx[t].append(file_name)
-    with open('./inverse_idx.json', 'w+') as fp:
-        json.dump(inverse_idx, fp)
+    with open('./inverse_idx.json', 'w+', encoding='utf8') as fp:
+        json.dump(inverse_idx, fp, )
 
         
