@@ -15,7 +15,7 @@ def find_docs_contains(word):
         inverse_idx = json.load(json_file)
     try:
         if word.startswith('!'):
-            return [page for k,v in inverse_idx if k != lemmatize(word[1:]) for page in v ]
+            return [page for k,v in inverse_idx.items() if k != lemmatize(word[1:]) for page in v ]
         else:
             return inverse_idx[lemmatize(word)]
     except Exception as e:
@@ -42,4 +42,5 @@ if __name__ == "__main__":
         else:
             docs = find_docs_contains(word=sub_or)
         result += docs
+    result = set(result)
     print(result)
