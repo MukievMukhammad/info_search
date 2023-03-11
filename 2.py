@@ -5,7 +5,7 @@ import json
 from pymorphy2 import MorphAnalyzer
 from nltk.corpus import stopwords
 
-patterns = "[A-Za-z0-9!#$%&'()*+,./:;<=>?@©\n\t\r[\]^_`{|}~—\"\\\-]+"
+patterns = "[!#$%&'()*+,.«»/+:;\-<=>?@©\n\t\r[\]^_`{|}~—\"\\\x0b\x0c]"
 stopwords_ru = stopwords.words("russian")
 morph = MorphAnalyzer()
 
@@ -44,6 +44,6 @@ if __name__ == '__main__':
             else:
                 inverse_idx[t].append(file_name)
     with open('./inverse_idx.json', 'w+', encoding='utf8') as fp:
-        json.dump(inverse_idx, fp, )
+        json.dump(inverse_idx, fp, ensure_ascii=False)
 
         
