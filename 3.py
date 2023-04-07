@@ -42,5 +42,5 @@ if __name__ == "__main__":
         else:
             docs = find_docs_contains(word=sub_or)
         result += docs
-    result = set(result)
+    result = sorted(set(result))
     print(result)
