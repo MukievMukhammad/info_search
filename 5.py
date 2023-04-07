@@ -32,7 +32,10 @@ def get_tf_idf(words):
     for w in words:
         tf = sum(w in w1 for w1 in words)/len(words)
         PAGES_COUNT = len(get_docs(docs_dir))
-        idf = math.log(PAGES_COUNT / len(inverse_idx[w]))
+        try:
+            idf = math.log(PAGES_COUNT / len(inverse_idx[w]))
+        except:
+            idf = 0 
         tf_idf[w] = tf * idf
     
     return tf_idf
